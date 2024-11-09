@@ -4,9 +4,12 @@ SHELL:=/bin/bash
 MAKEFLAGS+=--no-print-directory
 
 # Constants
+HOSTNAME:=$(CONTEST)-$(STACK)-$(SERVER)
 SSH_DIR:=$(HOME)/.ssh
-SSH_KEY:=$(SSH_DIR)/id_ed25519
+SSH_KEY_PATH:=$(SSH_DIR)/id_ed25519
+SSH_KEY_COMMENT:=$(GIT_USER)
 GIT_DEFAULT_BRANCH:=main
+GIT_USER:=$(STACK)@$(CONTEST)-$(SERVER)
 WORKING_DIR:=$(HOME)/$(WORKING_DIR_RELATIVE)
 
 # Default target is setup
@@ -23,12 +26,16 @@ setup:
 
 check-env:
 	@echo "Checking if enviorment variables are set..."
-	@if [ -z "$(HOSTNAME)" ]; then \
-		echo "Error: HOSTNAME is not set"; \
+	@if [ -z "$(CONTEST)" ]; then \
+		echo "Error: CONTEST is not set"; \
 		exit 1; \
 	fi
-	@if [ -z "$(GIT_USER)" ]; then \
-		echo "Error: GIT_USER is not set"; \
+	@if [ -z "$(STACK)" ]; then \
+		echo "Error: STACK is not set"; \
+		exit 1; \
+	fi
+	@if [ -z "$(SERVER)" ]; then \
+		echo "Error: SERVER is not set"; \
 		exit 1; \
 	fi
 	@if [ -z "$(GIT_EMAIL)" ]; then \
@@ -67,10 +74,10 @@ setup-ssh:
 	@echo "###############################################"
 	@echo "Setting up SSH..."
 	@mkdir -p $(SSH_DIR)
-	@ssh-keygen -t ed25519 -C $(HOSTNAME) -f $(SSH_KEY) -N '' > /dev/null
+	@ssh-keygen -t ed25519 -C $(SSH_KEY_COMMENT) -f $(SSH_KEY_PATH) -N '' > /dev/null
 	@cp ./ssh-config $(SSH_DIR)/config
 	@echo "Add the following public key to GitHub:"	
-	@cat $(SSH_KEY).pub
+	@cat $(SSH_KEY_PATH).pub
 	@$(MAKE) wait-for-enter
 	@echo "SSH setup complete."
 
@@ -105,4 +112,4 @@ setup-working-dir:
 	fi
 	@echo "Working directory setup complete. Navigate to $(WORKING_DIR) to start working."
 
-.PHONY: default setup check-env update-os set-hostname setup-ssh setup-git wait-for-enter setup-working-dir check-github-ssh
+.PHONY: default setup check-env set-hostname setup-ssh setup-git wait-for-enter setup-working-dir check-github-ssh
