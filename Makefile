@@ -22,13 +22,28 @@ setup:
 
 check-env:
 	@echo "Checking if enviorment variables are set..."
-	@if [ -z "$(HOSTNAME)" ]\ 
-	|| [ -z "$(GIT_NAME)" ]\ 
-	|| [ -z "$(GIT_EMAIL)" ]\ 
-	|| [ -z "$(GITHUB_SSH_URL)" ]\ 
-	|| [ -z "$(WORKING_DIR_RELATIVE)" ]\ 
-	|| [ -z "$(FIRST_PULL)" ]; then \
-		echo ""Error: env not set"; \
+	@if [ -z "$(HOSTNAME)" ]; then \
+		echo "Error: HOSTNAME is not set"; \
+		exit 1; \
+	fi
+	@if [ -z "$(GIT_USER)" ]; then \
+		echo "Error: GIT_USER is not set"; \
+		exit 1; \
+	fi
+	@if [ -z "$(GIT_EMAIL)" ]; then \
+		echo "Error: GIT_EMAIL is not set"; \
+		exit 1; \
+	fi
+	@if [ -z "$(GITHUB_SSH_URL)" ]; then \
+		echo "Error: GITHUB_SSH_URL is not set"; \
+		exit 1; \
+	fi
+	@if [ -z "$(WORKING_DIR_RELATIVE)" ]; then \
+		echo "Error: WORKING_DIR_RELATIVE is not set"; \
+		exit 1; \
+	fi
+	@if [ -z "$(FIRST_PULL)" ]; then \
+		echo "Error: FIRST_PULL is not set"; \
 		exit 1; \
 	fi
 
@@ -44,7 +59,7 @@ set-hostname:
 
 setup-git:
 	@echo "Setting up Git..."
-	@git config --global user.name $(GIT_NAME)
+	@git config --global user.name $(GIT_USER)
 	@git config --global user.email $(GIT_EMAIL)
 	@git config --global init.defaultBranch $(GIT_DEFAULT_BRANCH)
 
@@ -63,8 +78,8 @@ wait-for-enter:
 setup-working-dir:
 	@echo "Setting up working directory..."
 	@cd $(WORKING_DIR)
-	git init
-	git remote add origin $(GITHUB_SSH_URL)
+	@git init
+	@git remote add origin $(GITHUB_SSH_URL)
 
 	@if [ "$(FIRST_PULL)" = "true" ]; then \
 		git pull origin $(GIT_DEFAULT_BRANCH); \
