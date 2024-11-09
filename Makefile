@@ -73,4 +73,4 @@ setup-working-dir:
 		git reset --hard origin/$(GIT_DEFAULT_BRANCH); \
 	fi
 
-.PHONY: default setup check-env update-os set-hostname setup-ssh setup-git setup-working-dir
+.PHONY: default setup check-env update-os set-hostname setup-ssh setup-git wait-for-enter setup-working-dir
