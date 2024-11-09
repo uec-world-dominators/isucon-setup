@@ -1,5 +1,7 @@
 include env
 ENV_FILE:=env
+SHELL:=/bin/bash
+MAKEFLAGS+=--no-print-directory
 
 # Constants
 SSH_DIR:=$(HOME)/.ssh
@@ -12,13 +14,13 @@ default: setup
 
 setup:
 	@echo "Setting up..."
-	@check-env
-	@update-os
-	@set-hostname
-	@setup-git
-	@setup-ssh
-	@wait-for-enter
-	@setup-working-dir
+	@$(MAKE) check-env
+	@$(MAKE) update-os
+	@$(MAKE) set-hostname
+	@$(MAKE) setup-git
+	@$(MAKE) setup-ssh
+	@$(MAKE) check-github-ssh
+	@$(MAKE) setup-working-dir
 
 check-env:
 	@echo "Checking if enviorment variables are set..."
@@ -48,44 +50,67 @@ check-env:
 	fi
 
 update-os:
+	@echo "###############################################"
 	@echo "Updating OS..."
 	@sudo apt update
 	@sudo apt upgrade
+	@echo "OS updated."
 
 set-hostname:
+	@echo "###############################################"
 	@echo "Setting hostname..."
 	@sudo hostnamectl set-hostname $(HOSTNAME)
 	@sudo sed -i "s/$(shell hostname)/$(HOSTNAME)/g" /etc/hosts
+	@echo "Hostname set to $(HOSTNAME)."
 
 setup-git:
+	@echo "###############################################"
 	@echo "Setting up Git..."
 	@git config --global user.name $(GIT_USER)
 	@git config --global user.email $(GIT_EMAIL)
 	@git config --global init.defaultBranch $(GIT_DEFAULT_BRANCH)
+	@echo "Git setup complete."
 
 setup-ssh:
+	@echo "###############################################"
 	@echo "Setting up SSH..."
 	@mkdir -p $(SSH_DIR)
-	@ssh-keygen -t ed25519 -C $(HOSTNAME) -f $(SSH_KEY)
+	@ssh-keygen -t ed25519 -C $(HOSTNAME) -f $(SSH_KEY) -N '' > /dev/null
 	@cp ./ssh-config $(SSH_DIR)/config
 	@echo "Add the following public key to GitHub:"	
 	@cat $(SSH_KEY).pub
+	@$(MAKE) wait-for-enter
+	@echo "SSH setup complete."
 
 wait-for-enter:
 	@echo "Press enter to continue..."
 	@read _
 
-setup-working-dir:
-	@echo "Setting up working directory..."
-	@cd $(WORKING_DIR)
-	@git init
-	@git remote add origin $(GITHUB_SSH_URL)
-
-	@if [ "$(FIRST_PULL)" = "true" ]; then \
-		git pull origin $(GIT_DEFAULT_BRANCH); \
+check-github-ssh:
+	@echo "###############################################"
+	@echo "Checking if GitHub SSH key is added..."
+	@if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then \
+		echo "GitHub SSH key is added successfully."; \
 	else \
-		git fetch origin $(GIT_DEFAULT_BRANCH); \
-		git reset --hard origin/$(GIT_DEFAULT_BRANCH); \
+		echo "Error: GitHub SSH key is not added"; \
+		exit 1; \
 	fi
 
-.PHONY: default setup check-env update-os set-hostname setup-ssh setup-git wait-for-enter setup-working-dir
+setup-working-dir:
+	@echo "###############################################"
+	@echo "Setting up working directory in $(WORKING_DIR)..."
+	@if [ "$(FIRST_PULL)" = "true" ]; then \
+		cd $(WORKING_DIR) && \
+		git init && \
+		git remote add origin $(GITHUB_SSH_URL) && \
+		git pull origin $(GIT_DEFAULT_BRANCH); \
+	else \
+		cd $(WORKING_DIR) && \
+		git init && \
+		git remote add origin $(GITHUB_SSH_URL) && \
+		git fetch origin $(GIT_DEFAULT_BRANCH) && \
+		git reset --hard origin/$(GIT_DEFAULT_BRANCH); \
+	fi
+	@echo "Working directory setup complete. Navigate to $(WORKING_DIR) to start working."
+
+.PHONY: default setup check-env update-os set-hostname setup-ssh setup-git wait-for-enter setup-working-dir check-github-ssh
