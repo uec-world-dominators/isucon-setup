@@ -15,7 +15,6 @@ default: setup
 setup:
 	@echo "Setting up..."
 	@$(MAKE) check-env
-	@$(MAKE) update-os
 	@$(MAKE) set-hostname
 	@$(MAKE) setup-git
 	@$(MAKE) setup-ssh
@@ -48,13 +47,6 @@ check-env:
 		echo "Error: FIRST_PULL is not set"; \
 		exit 1; \
 	fi
-
-update-os:
-	@echo "###############################################"
-	@echo "Updating OS..."
-	@sudo apt update
-	@sudo apt upgrade
-	@echo "OS updated."
 
 set-hostname:
 	@echo "###############################################"
