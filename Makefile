@@ -73,7 +73,7 @@ setup-ssh:
 
 wait-for-enter:
 	@echo "Press enter to continue..."
-	@read
+	@read _
 
 setup-working-dir:
 	@echo "Setting up working directory..."
