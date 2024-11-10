@@ -7,7 +7,7 @@ MAKEFLAGS+=--no-print-directory
 HOSTNAME:=$(CONTEST)-$(STACK)-$(SERVER)
 SSH_DIR:=$(HOME)/.ssh
 SSH_KEY_PATH:=$(SSH_DIR)/id_ed25519
-SSH_KEY_COMMENT:=$(GIT_USER)
+SSH_KEY_COMMENT:=$(STACK)@$(CONTEST)-$(SERVER)
 GIT_DEFAULT_BRANCH:=main
 GIT_USER:=$(STACK)@$(CONTEST)-$(SERVER)
 WORKING_DIR:=$(HOME)/$(WORKING_DIR_RELATIVE)
@@ -26,31 +26,31 @@ setup:
 
 check-env:
 	@echo "Checking if enviorment variables are set..."
-	@if [ -z "$(CONTEST)" ]; then \
+	@if [ -z $(CONTEST) ]; then \
 		echo "Error: CONTEST is not set"; \
 		exit 1; \
 	fi
-	@if [ -z "$(STACK)" ]; then \
+	@if [ -z $(STACK) ]; then \
 		echo "Error: STACK is not set"; \
 		exit 1; \
 	fi
-	@if [ -z "$(SERVER)" ]; then \
+	@if [ -z $(SERVER) ]; then \
 		echo "Error: SERVER is not set"; \
 		exit 1; \
 	fi
-	@if [ -z "$(GIT_EMAIL)" ]; then \
+	@if [ -z $(GIT_EMAIL) ]; then \
 		echo "Error: GIT_EMAIL is not set"; \
 		exit 1; \
 	fi
-	@if [ -z "$(GITHUB_SSH_URL)" ]; then \
+	@if [ -z $(GITHUB_SSH_URL) ]; then \
 		echo "Error: GITHUB_SSH_URL is not set"; \
 		exit 1; \
 	fi
-	@if [ -z "$(WORKING_DIR_RELATIVE)" ]; then \
+	@if [ -z $(WORKING_DIR_RELATIVE) ]; then \
 		echo "Error: WORKING_DIR_RELATIVE is not set"; \
 		exit 1; \
 	fi
-	@if [ -z "$(FIRST_PULL)" ]; then \
+	@if [ -z $(FIRST_PULL) ]; then \
 		echo "Error: FIRST_PULL is not set"; \
 		exit 1; \
 	fi
@@ -98,7 +98,7 @@ check-github-ssh:
 setup-working-dir:
 	@echo "###############################################"
 	@echo "Setting up working directory in $(WORKING_DIR)..."
-	@if [ "$(FIRST_PULL)" = "true" ]; then \
+	@if [ $(FIRST_PULL) = "true" ]; then \
 		cd $(WORKING_DIR) && \
 		git init && \
 		git remote add origin $(GITHUB_SSH_URL) && \
