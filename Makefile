@@ -4,12 +4,12 @@ SHELL:=/bin/bash
 MAKEFLAGS+=--no-print-directory
 
 # Constants
-HOSTNAME:=$(CONTEST)-$(STACK)-$(SERVER)
+HOSTNAME:=$(CONTEST)-$(STACK)-$(SERVER_ID)
 SSH_DIR:=$(HOME)/.ssh
 SSH_KEY_PATH:=$(SSH_DIR)/id_ed25519
-SSH_KEY_COMMENT:=$(STACK)@$(CONTEST)-$(SERVER)
+SSH_KEY_COMMENT:=$(STACK)@$(CONTEST)-$(SERVER_ID)
 GIT_DEFAULT_BRANCH:=main
-GIT_USER:=$(STACK)@$(CONTEST)-$(SERVER)
+GIT_USER:=$(STACK)@$(CONTEST)-$(SERVER_ID)
 WORKING_DIR:=$(HOME)/$(WORKING_DIR_RELATIVE)
 
 # Default target is setup
@@ -34,8 +34,8 @@ check-env:
 		echo "Error: STACK is not set"; \
 		exit 1; \
 	fi
-	@if [ -z $(SERVER) ]; then \
-		echo "Error: SERVER is not set"; \
+	@if [ -z $(SERVER_ID) ]; then \
+		echo "Error: SERVER_ID is not set"; \
 		exit 1; \
 	fi
 	@if [ -z $(GIT_EMAIL) ]; then \
