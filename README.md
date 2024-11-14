@@ -33,4 +33,8 @@ GIT_EMAIL=prod@example.com
 GITHUB_SSH_URL=git@github.com:uec-world-dominators/isucon9q.git # 作業レポジトリ
 WORKING_DIR_RELATIVE=isucari # ホームディレクトリに対する作業ディレクトリのパス
 FIRST_PULL=false # 初めてのセットアップであれば true
+
+S1_PUBLIC_KEY=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICInNg79abEccf2FkN417hETR0Ff8RcegRiXMHmjcg8D isucon-app
+S2_IP=10.204.104.160
+S3_IP=10.204.104.161
 ```
