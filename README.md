@@ -2,6 +2,20 @@
 
 ISUCONの作業環境を構築するためのレポジトリです。
 
+## 事前準備
+
+`$HOME/.ssh/`にSSH秘密鍵`id_ed25519`を配置
+
+ローカル端末からの送信例：
+
+```sh
+# 鍵の作成
+ssh-keygen -t ed25519 -C "isucon-server" -f ./id_ed25519 -N ""
+
+# 鍵の送信
+scp ./id_ed25519 isucon9q-prod-s1:/home/isucon/.ssh/id_ed25519
+```
+
 ## 使い方
 
 レポジトリのインストール
