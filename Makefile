@@ -4,11 +4,9 @@ SHELL:=/bin/bash
 MAKEFLAGS+=--no-print-directory
 
 # Constants
-HOSTNAME:=$(CONTEST)-$(STACK)-$(SERVER_ID)
 SSH_DIR:=$(HOME)/.ssh
 GIT_DEFAULT_BRANCH:=main
 SSH_KEY_PATH:=$(SSH_DIR)/id_ed25519
-GIT_USER:=$(STACK)@$(CONTEST)-$(SERVER_ID)
 WORKING_DIR:=$(HOME)/$(WORKING_DIR_RELATIVE)
 
 # Default target is setup
@@ -17,30 +15,12 @@ default: setup
 setup:
 	@echo "Setting up..."
 	@$(MAKE) check-env
-	@$(MAKE) set-hostname
-	@$(MAKE) setup-git
 	@$(MAKE) setup-ssh
 	@$(MAKE) check-github-ssh
 	@$(MAKE) setup-working-dir
 
 check-env:
 	@echo "Checking if enviorment variables are set..."
-	@if [ -z $(CONTEST) ]; then \
-		echo "Error: CONTEST is not set"; \
-		exit 1; \
-	fi
-	@if [ -z $(STACK) ]; then \
-		echo "Error: STACK is not set"; \
-		exit 1; \
-	fi
-	@if [ -z $(SERVER_ID) ]; then \
-		echo "Error: SERVER_ID is not set"; \
-		exit 1; \
-	fi
-	@if [ -z $(GIT_EMAIL) ]; then \
-		echo "Error: GIT_EMAIL is not set"; \
-		exit 1; \
-	fi
 	@if [ -z $(GITHUB_SSH_URL) ]; then \
 		echo "Error: GITHUB_SSH_URL is not set"; \
 		exit 1; \
@@ -54,24 +34,13 @@ check-env:
 		exit 1; \
 	fi
 
-set-hostname:
-	@echo "###############################################"
-	@echo "Setting hostname..."
-	@sudo hostnamectl set-hostname $(HOSTNAME)
-	@sudo sed -i "s/$(shell hostname)/$(HOSTNAME)/g" /etc/hosts
-	@echo "Hostname set to $(HOSTNAME)."
-
-setup-git:
-	@echo "###############################################"
-	@echo "Setting up Git..."
-	@git config --global user.name $(GIT_USER)
-	@git config --global user.email $(GIT_EMAIL)
-	@git config --global init.defaultBranch $(GIT_DEFAULT_BRANCH)
-	@echo "Git setup complete."
-
 setup-ssh:
 	@echo "###############################################"
 	@echo "Setting up SSH..."
+    @if [ ! -f $(SSH_KEY_PATH) ]; then \
+        echo "Error: SSH key not found"; \
+        exit 1; \
+    fi
 	@ssh-keygen -y -f $(SSH_KEY_PATH) > $(SSH_KEY_PATH).pub
 	@cp ./ssh-config $(SSH_DIR)/config
 	@echo "SSH setup complete."
@@ -103,4 +72,4 @@ setup-working-dir:
 	fi
 	@echo "Working directory setup complete. Navigate to $(WORKING_DIR) to start working."
 
-.PHONY: default setup check-env set-hostname setup-ssh setup-git check-github-ssh setup-working-dir 
+.PHONY: default setup setup-ssh check-github-ssh setup-working-dir 
