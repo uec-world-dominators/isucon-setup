@@ -20,6 +20,7 @@ setup:
 	@$(MAKE) setup-working-dir
 
 check-env:
+	@echo "###############################################"
 	@echo "Checking if enviorment variables are set..."
 	@if [ -z $(GITHUB_SSH_URL) ]; then \
 		echo "Error: GITHUB_SSH_URL is not set"; \
@@ -33,14 +34,15 @@ check-env:
 		echo "Error: FIRST_PULL is not set"; \
 		exit 1; \
 	fi
+	@echo "All enviorment variables are set."
 
 setup-ssh:
 	@echo "###############################################"
 	@echo "Setting up SSH..."
-    @if [ ! -f $(SSH_KEY_PATH) ]; then \
-        echo "Error: SSH key not found"; \
-        exit 1; \
-    fi
+	@if [ ! -f $(SSH_KEY_PATH) ]; then \
+		echo "Error: SSH key not found"; \
+		exit 1; \
+	fi
 	@ssh-keygen -y -f $(SSH_KEY_PATH) > $(SSH_KEY_PATH).pub
 	@cat ./ssh-config >> $(SSH_DIR)/config
 	@echo "SSH setup complete."
