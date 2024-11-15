@@ -20,6 +20,8 @@ setup:
 	@$(MAKE) set-hostname
 	@$(MAKE) setup-git
 	@$(MAKE) setup-ssh
+	@$(MAKE) add-hosts
+	@$(MAKE) add-authorized-keys
 	@$(MAKE) check-github-ssh
 	@$(MAKE) setup-working-dir
 
@@ -51,6 +53,10 @@ check-env:
 	fi
 	@if [ -z $(FIRST_PULL) ]; then \
 		echo "Error: FIRST_PULL is not set"; \
+		exit 1; \
+	fi
+	@if [ -z $(S1_IP) ] || [ -z $(S2_IP) ] || [ -z $(S3_IP) ]; then \
+		echo "Error: S1_IP, S2_IP, or S3_IP is not set"; \
 		exit 1; \
 	fi
 
@@ -103,38 +109,18 @@ setup-working-dir:
 	fi
 	@echo "Working directory setup complete. Navigate to $(WORKING_DIR) to start working."
 
-## Setup mannually
-
-## s2, s3 上で s1 の公開鍵を登録する
-.PHONY: add-authorized-keys
 add-authorized-keys:
 	@echo "###############################################"
 	@echo "Setting up authorized_keys..."
-	@if [ -n "$(S1_PUBLIC_KEY)" ] ; then \
-		mkdir -p $(SSH_DIR) && \
-		echo $(S1_PUBLIC_KEY) >> $(SSH_DIR)/authorized_keys && \
-		echo "authorized_keys setup complete."; \
-	else \
-		echo "Error: S1_PUBLIC_KEY is not set"; \
-		exit 1; \
-	fi
+	@cat $(SSH_KEY_PATH).pub >> $(SSH_DIR)/authorized_keys
+	@echo "authorized_keys setup complete."
 
-## s1 から s2, s3 に ssh 接続できるようにする
-.PHONY: add-hosts
 add-hosts:
 	@echo "###############################################"
 	@echo "Setting up /etc/hosts..."
-	@if [ -n "$(S2_IP)" -a -n "$(S3_IP)" ]; then \
-		sudo bash -c "echo $(S2_IP) s2 >> /etc/hosts" && \
-		sudo bash -c "echo $(S3_IP) s3 >> /etc/hosts" && \
-		echo "add s2, s3 hostname to /etc/hosts."; \
-	else \
-		echo "Error: S2_IP or S3_IP are not set"; \
-		exit 1; \
-	fi
-	@echo "Checking Connection..."
-	@ssh isucon@s2 "echo Connection to s2 is successful."
-	@ssh isucon@s3 "echo Connection to s3 is successful."
-	@echo "Connection check complete."
+	@sudo bash -c "echo $(S1_IP) s1 >> /etc/hosts"
+	@sudo bash -c "echo $(S2_IP) s2 >> /etc/hosts"
+	@sudo bash -c "echo $(S3_IP) s3 >> /etc/hosts"
+	@echo "Add hosts complete."
 
-.PHONY: default setup check-env set-hostname setup-ssh setup-git wait-for-enter setup-working-dir check-github-ssh
+.PHONY: default setup check-env set-hostname setup-ssh setup-git wait-for-enter setup-working-dir check-github-ssh add-authorized-keys add-hosts

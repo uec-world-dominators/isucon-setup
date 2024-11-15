@@ -1,3 +1,22 @@
 Host github.com
-  HostName github.com
-  IdentityFile ~/.ssh/id_ed25519
+    HostName github.com
+    IdentityFile ~/.ssh/id_ed25519
+    StrictHostKeyChecking no
+
+Host s1
+    HostName s1
+    User isucon
+    IdentityFile ~/.ssh/id_ed25519
+    StrictHostKeyChecking no
+
+Host s2
+    HostName s2
+    User isucon
+    IdentityFile ~/.ssh/id_ed25519
+    StrictHostKeyChecking no
+
+Host s3
+    HostName s3
+    User isucon
+    IdentityFile ~/.ssh/id_ed25519
+    StrictHostKeyChecking no
