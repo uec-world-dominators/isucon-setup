@@ -6,9 +6,8 @@ MAKEFLAGS+=--no-print-directory
 # Constants
 HOSTNAME:=$(CONTEST)-$(STACK)-$(SERVER_ID)
 SSH_DIR:=$(HOME)/.ssh
-SSH_KEY_PATH:=$(SSH_DIR)/id_ed25519
-SSH_KEY_COMMENT:=$(STACK)@$(CONTEST)-$(SERVER_ID)
 GIT_DEFAULT_BRANCH:=main
+SSH_KEY_PATH:=$(SSH_DIR)/id_ed25519
 GIT_USER:=$(STACK)@$(CONTEST)-$(SERVER_ID)
 WORKING_DIR:=$(HOME)/$(WORKING_DIR_RELATIVE)
 
@@ -73,17 +72,9 @@ setup-git:
 setup-ssh:
 	@echo "###############################################"
 	@echo "Setting up SSH..."
-	@mkdir -p $(SSH_DIR)
-	@ssh-keygen -t ed25519 -C $(SSH_KEY_COMMENT) -f $(SSH_KEY_PATH) -N '' > /dev/null
+	@ssh-keygen -y -f $(SSH_KEY_PATH) > $(SSH_KEY_PATH).pub
 	@cp ./ssh-config $(SSH_DIR)/config
-	@echo "Add the following public key to GitHub:"	
-	@cat $(SSH_KEY_PATH).pub
-	@$(MAKE) wait-for-enter
 	@echo "SSH setup complete."
-
-wait-for-enter:
-	@echo "Press enter to continue..."
-	@read _
 
 check-github-ssh:
 	@echo "###############################################"
@@ -112,4 +103,4 @@ setup-working-dir:
 	fi
 	@echo "Working directory setup complete. Navigate to $(WORKING_DIR) to start working."
 
-.PHONY: default setup check-env set-hostname setup-ssh setup-git wait-for-enter setup-working-dir check-github-ssh
+.PHONY: default setup check-env set-hostname setup-ssh setup-git check-github-ssh setup-working-dir 
