@@ -42,7 +42,7 @@ setup-ssh:
         exit 1; \
     fi
 	@ssh-keygen -y -f $(SSH_KEY_PATH) > $(SSH_KEY_PATH).pub
-	@cp ./ssh-config $(SSH_DIR)/config
+	@cat ./ssh-config >> $(SSH_DIR)/config
 	@echo "SSH setup complete."
 
 check-github-ssh:
