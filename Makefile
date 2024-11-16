@@ -62,6 +62,7 @@ setup-working-dir:
 	@if [ $(FIRST_PULL) = "true" ]; then \
 		cd $(WORKING_DIR) && \
 		git init && \
+		git branch -m $(GIT_DEFAULT_BRANCH) && \
 		git remote add origin $(GITHUB_SSH_URL) && \
 		git pull origin $(GIT_DEFAULT_BRANCH); \
 	else \
