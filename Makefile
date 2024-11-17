@@ -59,10 +59,10 @@ check-github-ssh:
 setup-working-dir:
 	@echo "###############################################"
 	@echo "Setting up working directory in $(WORKING_DIR)..."
+	@git config --global init.defaultBranch $(GIT_DEFAULT_BRANCH)
 	@if [ $(FIRST_PULL) = "true" ]; then \
 		cd $(WORKING_DIR) && \
 		git init && \
-		git branch -m $(GIT_DEFAULT_BRANCH) && \
 		git remote add origin $(GITHUB_SSH_URL) && \
 		git pull origin $(GIT_DEFAULT_BRANCH); \
 	else \
