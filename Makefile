@@ -1,4 +1,4 @@
-include env
+include .env
 SHELL:=/bin/bash
 MAKEFLAGS+=--no-print-directory
 
