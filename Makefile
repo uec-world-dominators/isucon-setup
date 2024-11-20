@@ -18,6 +18,12 @@ setup:
 	@$(MAKE) check-github-ssh
 	@$(MAKE) setup-working-dir
 
+mv-webapp:
+	@echo "Moving $(HOME)/webapp to $(WORKING_DIR)/webapp"
+	@mv $(HOME)/webapp/* $(HOME)/webapp/.* $(WORKING_DIR)/webapp/
+	@rm -rf $(HOME)/webapp
+	@ln -s $(WORKING_DIR)/webapp $(HOME)/webapp
+
 check-env:
 	@echo "###############################################"
 	@echo "Checking if enviorment variables are set..."

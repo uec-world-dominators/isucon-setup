@@ -41,6 +41,12 @@ vim env
 make
 ```
 
+ホームディレクトリにあるwebappを作業ディレクトリに移動する場合
+
+```sh
+make mv-webapp
+```
+
 環境変数の設定例
 
 ```sh
