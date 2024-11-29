@@ -31,14 +31,20 @@ git clone --depth 1 https://github.com/uec-world-dominators/isucon-setup
 環境変数の設定
 
 ```sh
-cp env.example env
-vim env
+cp .env.example .env
+vim .env
 ```
 
 セットアップの開始
 
 ```sh
 make
+```
+
+ホームディレクトリにあるwebappを作業ディレクトリに移動する場合
+
+```sh
+make mv-webapp
 ```
 
 環境変数の設定例
