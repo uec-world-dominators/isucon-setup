@@ -20,7 +20,9 @@ setup:
 
 mv-webapp:
 	@echo "Moving $(HOME)/webapp to $(WORKING_DIR)/webapp"
+	@mkdir -p $(WORKING_DIR)
 	@mv $(HOME)/webapp/* $(HOME)/webapp/.* $(WORKING_DIR)/webapp/
+	@cp $(HOME)/webapp $(HOME)/old-webapp
 	@rm -rf $(HOME)/webapp
 	@ln -s $(WORKING_DIR)/webapp $(HOME)/webapp
 
