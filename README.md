@@ -17,7 +17,7 @@ ssh-keygen -t ed25519 -C "isucon-server" -f ./id_ed25519 -N ""
 cat id_ed25519.pub | pbcopy
 
 # 秘密鍵をサーバーに送信
-scp ./id_ed25519 isucon9q-prod-s1:/home/isucon/.ssh/id_ed25519
+scp ./id_ed25519 isucon9q-s1:/home/isucon/.ssh/id_ed25519
 ```
 
 ## 使い方
